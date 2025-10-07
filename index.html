@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DhanXzz Brat Generator</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&display=swap');
+        
+        :root {
+            --neon-green: #00FF41;
+            --electric-cyan: #00FFFF;
+            --hot-pink: #FF1493;
+            --laser-red: #FF0000;
+            --gold: #FFD700;
+            --orange: #FF8C00;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        /* LOADING PAGE STYLES */
+        .loading-page {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #000000, #1a1a1a, #000000);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        
+        .loading-page.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        .loading-logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 5rem;
+            font-weight: 900;
+            background: linear-gradient(90deg, var(--neon-green), var(--electric-cyan), var(--hot-pink), var(--gold));
+            background-size: 300% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: logoShine 2s linear infinite, logoPulse 1.5s ease-in-out infinite;
+            text-transform: uppercase;
+            letter-spacing: 8px;
+            margin-bottom: 40px;
+        }
+        
+        @keyframes logoShine {
+            0% { background-position: 0% center; }
+            100% { background-position: 300% center; }
+        }
+        
+        @keyframes logoPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .loading-bar-container {
+            width: 300px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .loading-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--neon-green), var(--electric-cyan), var(--hot-pink));
+            border-radius: 10px;
+            animation: loadingProgress 2s ease-in-out forwards;
+            box-shadow: 0 0 20px var(--neon-green);
+        }
+        
+        @keyframes loadingProgress {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+        
+        .loading-text {
+            margin-top: 20px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.2rem;
+            color: var(--electric-cyan);
+            letter-spacing: 3px;
+            animation: loadingTextBlink 1s ease-in-out infinite;
+        }
+        
+        @keyframes loadingTextBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        /* MAIN PAGE STYLES */
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: linear-gradient(135deg, #000000 0%, #0a0a0a 50%, #000000 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        .matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.15;
+        }
+        
+        .matrix-line {
+            position: absolute;
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(180deg, transparent, var(--neon-green), transparent);
+            animation: matrixFall linear infinite;
+        }
+        
+        @keyframes matrixFall {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+        
+        .grid-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(var(--electric-cyan) 1px, transparent 1px),
+                linear-gradient(90deg, var(--electric-cyan) 1px, transparent 1px);
+            background-size: 50px 50px;
+            opacity: 0.03;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 650px;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            padding: 60px 45px;
+            box-shadow: 
+                0 0 50px rgba(0, 255, 65, 0.3),
+                0 0 100px rgba(0, 255, 255, 0.2),
+                inset 0 0 50px rgba(0, 255, 65, 0.05);
+            border: 3px solid;
+            border-image: linear-gradient(135deg, var(--neon-green), var(--electric-cyan), var(--hot-pink), var(--gold)) 1;
+            animation: containerGlow 3s ease-in-out infinite;
+        }
+        
+        @keyframes containerGlow {
+            0%, 100% { 
+                box-shadow: 
+                    0 0 50px rgba(0, 255, 65, 0.3),
+                    0 0 100px rgba(0, 255, 255, 0.2),
+                    inset 0 0 50px rgba(0, 255, 65, 0.05);
+            }
+            50% { 
+                box-shadow: 
+                    0 0 70px rgba(0, 255, 255, 0.4),
+                    0 0 120px rgba(255, 20, 147, 0.3),
+                    inset 0 0 60px rgba(0, 255, 255, 0.08);
+            }
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+        }
+        
+        .main-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 4.5rem;
+            font-weight: 900;
+            background: linear-gradient(90deg, var(--neon-green), var(--electric-cyan), var(--hot-pink), var(--gold), var(--neon-green));
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: titleFlow 4s linear infinite;
+            letter-spacing: 10px;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 0 30px rgba(0, 255, 65, 0.8));
+        }
+        
+        @keyframes titleFlow {
+            0% { background-position: 0% center; }
+            100% { background-position: 200% center; }
+        }
+        
+        .subtitle {
+            font-size: 1.3rem;
+            color: var(--electric-cyan);
+            font-weight: 500;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px var(--electric-cyan);
+        }
+        
+        .decorative-line {
+            width: 200px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--hot-pink), transparent);
+            margin: 20px auto;
+            border-radius: 5px;
+            box-shadow: 0 0 10px var(--hot-pink);
+        }
+        
+        .input-section {
+            margin-bottom: 35px;
+        }
+        
+        .input-label {
+            display: block;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--neon-green);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px var(--neon-green);
+        }
+        
+        .input-wrapper {
+            position: relative;
+        }
+        
+        .text-input {
+            width: 100%;
+            padding: 22px 25px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 3px solid var(--neon-green);
+            border-radius: 15px;
+            color: white;
+            font-size: 1.2rem;
+            font-family: 'Rajdhani', sans-serif;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
+        }
+        
+        .text-input:focus {
+            outline: none;
+            border-color: var(--electric-cyan);
+            box-shadow: 
+                0 0 30px rgba(0, 255, 255, 0.5),
+                inset 0 0 15px rgba(0, 255, 255, 0.1);
+            transform: translateY(-3px);
+            background: rgba(0, 255, 255, 0.05);
+        }
+        
+        .text-input::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .char-counter {
+            position: absolute;
+            right: 15px;
+            bottom: -25px;
+            font-size: 0.9rem;
+            color: var(--gold);
+        }
+        
+        .generate-btn {
+            width: 100%;
+            padding: 25px;
+            background: linear-gradient(135deg, var(--laser-red), var(--orange), var(--gold));
+            background-size: 200% auto;
+            border: none;
+            border-radius: 15px;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 700;
+            font-family: 'Orbitron', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            box-shadow: 
+                0 10px 30px rgba(255, 0, 0, 0.4),
+                0 0 50px rgba(255, 140, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        
+        .generate-btn::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transform: rotate(45deg);
+            animation: btnShine 3s linear infinite;
+        }
+        
+        @keyframes btnShine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+        
+        .generate-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 
+                0 15px 40px rgba(255, 0, 0, 0.6),
+                0 0 70px rgba(255, 215, 0, 0.5);
+            background-position: right center;
+        }
+        
+        .generate-btn:active {
+            transform: translateY(-2px);
+        }
+        
+        .loading-section {
+            display: none;
+            text-align: center;
+            margin: 40px 0;
+        }
+        
+        .loader {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 25px;
+            position: relative;
+        }
+        
+        .loader-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 4px solid transparent;
+            border-top-color: var(--neon-green);
+            border-right-color: var(--electric-cyan);
+            border-radius: 50%;
+            animation: loaderSpin 1.5s linear infinite;
+        }
+        
+        .loader-ring:nth-child(2) {
+            border-top-color: var(--hot-pink);
+            border-right-color: var(--gold);
+            animation-duration: 2s;
+            animation-direction: reverse;
+        }
+        
+        @keyframes loaderSpin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading-message {
+            font-size: 1.3rem;
+            background: linear-gradient(90deg, var(--neon-green), var(--electric-cyan), var(--hot-pink));
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: loadingTextMove 2s linear infinite;
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+        
+        @keyframes loadingTextMove {
+            0% { background-position: 0% center; }
+            100% { background-position: 200% center; }
+        }
+        
+        .result-section {
+            display: none;
+            margin-top: 50px;
+            animation: resultFadeIn 0.8s ease;
+        }
+        
+        @keyframes resultFadeIn {
+            from { 
+                opacity: 0; 
+                transform: translateY(30px) scale(0.95);
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        .result-title {
+            text-align: center;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+            background: linear-gradient(90deg, var(--electric-cyan), var(--hot-pink), var(--gold));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+        
+        .image-container {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 30px;
+            box-shadow: 
+                0 20px 60px rgba(0, 255, 255, 0.3),
+                0 0 80px rgba(255, 20, 147, 0.2);
+            border: 4px solid;
+            border-image: linear-gradient(135deg, var(--electric-cyan), var(--hot-pink), var(--gold)) 1;
+            transform-style: preserve-3d;
+            transition: transform 0.3s ease;
+        }
+        
+        .image-container:hover {
+            transform: translateY(-10px) rotateX(5deg);
+        }
+        
+        .result-image {
+            width: 100%;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+        
+        .image-container:hover .result-image {
+            transform: scale(1.08);
+        }
+        
+        .download-btn {
+            display: block;
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--neon-green), var(--electric-cyan));
+            background-size: 200% auto;
+            border: none;
+            border-radius: 15px;
+            color: black;
+            font-size: 1.3rem;
+            font-weight: 700;
+            font-family: 'Orbitron', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-shadow: 
+                0 10px 30px rgba(0, 255, 65, 0.4),
+                0 0 50px rgba(0, 255, 255, 0.3);
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 
+                0 15px 40px rgba(0, 255, 65, 0.6),
+                0 0 70px rgba(0, 255, 255, 0.5);
+            background-position: right center;
+        }
+        
+        .info-panel {
+            margin-top: 30px;
+            background: linear-gradient(135deg, rgba(0, 255, 65, 0.1), rgba(0, 255, 255, 0.1));
+            border: 2px solid var(--neon-green);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 0 30px rgba(0, 255, 65, 0.2);
+        }
+        
+        .info-header {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--electric-cyan);
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .info-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .info-item {
+            padding: 10px 0;
+            padding-left: 30px;
+            position: relative;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.05rem;
+            line-height: 1.6;
+        }
+        
+        .info-item::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: var(--gold);
+            font-size: 1.5rem;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 2px solid;
+            border-image: linear-gradient(90deg, transparent, var(--neon-green), transparent) 1;
+        }
+        
+        .footer-brand {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--neon-green), var(--electric-cyan), var(--hot-pink));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .footer-text {
+            color: rgba(255, 255, 255, 0.5);
+            margin-top: 8px;
+            font-size: 0.95rem;
+        }
+        
+        @media (max-width: 600px) {
+            .loading-logo {
+                font-size: 3rem;
+            }
+            
+            .container {
+                padding: 40px 25px;
+            }
+            
+            .main-title {
+                font-size: 3rem;
+                letter-spacing: 5px;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+            
+            .generate-btn {
+                font-size: 1.2rem;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- LOADING PAGE -->
+    <div class="loading-page" id="loadingPage">
+        <div class="loading-logo">DhanXzz</div>
+        <div class="loading-bar-container">
+            <div class="loading-bar"></div>
+        </div>
+        <div class="loading-text">INITIALIZING...</div>
+    </div>
+
+    <!-- MATRIX BACKGROUND -->
+    <div class="matrix-bg" id="matrixBg"></div>
+    <div class="grid-overlay"></div>
+
+    <!-- MAIN CONTAINER -->
+    <div class="container">
+        <div class="header">
+            <h1 class="main-title">DhanXzz</h1>
+            <div class="decorative-line"></div>
+            <p class="subtitle">Brat Generator Pro</p>
+        </div>
+        
+        <div class="input-section">
+            <label class="input-label">⚡ Input Your Text</label>
+            <div class="input-wrapper">
+                <input type="text" class="text-input" id="textInput" placeholder="Type something awesome..." maxlength="100">
+                <span class="char-counter" id="charCounter">0/100</span>
+            </div>
+        </div>
+        
+        <button class="generate-btn" id="generateBtn">
+            🚀 Generate Now
+        </button>
+        
+        <div class="loading-section" id="loadingSection">
+            <div class="loader">
+                <div class="loader-ring"></div>
+                <div class="loader-ring"></div>
+            </div>
+            <p class="loading-message">Creating Your Masterpiece...</p>
+        </div>
+        
+        <div class="result-section" id="resultSection">
+            <h2 class="result-title">✨ Your Creation</h2>
+            <div class="image-container">
+                <img class="result-image" id="resultImage" src="" alt="Generated Brat">
+            </div>
+            <button class="download-btn" id="downloadBtn">
+                💾 Download Image
+            </button>
+            
+            <div class="info-panel">
+                <h3 class="info-header">📥 Download Guide</h3>
+                <ul class="info-list">
+                    <li class="info-item">Click "Download Image" button</li>
+                    <li class="info-item">File saved automatically to Downloads folder</li>
+                    <li class="info-item">Press Ctrl+J for quick access</li>
+                    <li class="info-item">Use Downloads Button extension for easier management</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <div class="footer-brand">DhanXzz</div>
+            <p class="footer-text">Premium Brat Generator © 2025</p>
+        </div>
+    </div>
+
+    <script>
+        // LOADING PAGE SCRIPT
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                document.getElementById('loadingPage').classList.add('hidden');
+            }, 2000);
+        });
+        
+        // MATRIX BACKGROUND
+        const matrixBg = document.getElementById('matrixBg');
+        for (let i = 0; i < 20; i++) {
+            const line = document.createElement('div');
+            line.className = 'matrix-line';
+            line.style.left = Math.random() * 100 + '%';
+            line.style.animationDuration = (Math.random() * 3 + 2) + 's';
+            line.style.animationDelay = Math.random() * 2 + 's';
+            matrixBg.appendChild(line);
+        }
+        
+        // MAIN FUNCTIONALITY
+        const textInput = document.getElementById('textInput');
+        const charCounter = document.getElementById('charCounter');
+        const generateBtn = document.getElementById('generateBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const resultImage = document.getElementById('resultImage');
+        const resultSection = document.getElementById('resultSection');
+        const loadingSection = document.getElementById('loadingSection');
+        
+        // Character counter
+        textInput.addEventListener('input', function() {
+            charCounter.textContent = this.value.length + '/100';
+        });
+        
+        // Generate button
+        generateBtn.addEventListener('click', function() {
+            const text = textInput.value.trim();
+            
+            if (text === '') {
+                alert('⚠️ Please enter some text first!');
+                return;
+            }
+            
+            loadingSection.style.display = 'block';
+            resultSection.style.display = 'none';
+            
+            const encodedText = encodeURIComponent(text);
+            const apiUrl = `https://api.sxtream.xyz/maker/brat?background=Putih&color=Hitam&text=${encodedText}`;
+            const proxyUrl = `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(apiUrl)}`;
+            
+            resultImage.onload = function() {
+                loadingSection.style.display = 'none';
+                resultSection.style.display = 'block';
+                resultSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            };
+            
+            resultImage.onerror = function() {
+                loadingSection.style.display = 'none';
+                alert('❌ Failed to generate image. Please try again!');
+            };
+            
+            resultImage.src = proxyUrl;
+        });
+        
+        // Download button
+        downloadBtn.addEventListener('click', function() {
+            if (!resultImage.src || resultImage.src === window.location.href) {
+                alert('⚠️ No image to download!');
+                return;
+            }
+            
+            const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+            const filename = `dhanxzz-brat-${timestamp}.png`;
+            
+            const a = document.createElement('a');
+            a.href = resultImage.src;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            
+            alert(`✅ Image "${filename}" is downloading!`);
+        });
+        
+        // Enter key to generate
+        textInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                generateBtn.click();
+            }
+        });
+    </script>
+</body>
+      </html>
