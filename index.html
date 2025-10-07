@@ -703,23 +703,40 @@
         });
         
         // Download button
-        downloadBtn.addEventListener('click', function() {
+        downloadBtn.addEventListener('click', async function() {
             if (!resultImage.src || resultImage.src === window.location.href) {
                 alert('⚠️ No image to download!');
                 return;
             }
             
-            const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-            const filename = `dhanxzz-brat-${timestamp}.png`;
-            
-            const a = document.createElement('a');
-            a.href = resultImage.src;
-            a.download = filename;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            
-            alert(`✅ Image "${filename}" is downloading!`);
+            try {
+                // Fetch gambar sebagai blob
+                const response = await fetch(resultImage.src);
+                const blob = await response.blob();
+                
+                // Buat URL dari blob
+                const blobUrl = window.URL.createObjectURL(blob);
+                
+                // Buat timestamp untuk nama file
+                const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+                const filename = `dhanxzz-brat-${timestamp}.png`;
+                
+                // Buat element anchor dan trigger download
+                const a = document.createElement('a');
+                a.href = blobUrl;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                
+                // Bersihkan blob URL setelah digunakan
+                window.URL.revokeObjectURL(blobUrl);
+                
+                alert(`✅ Image "${filename}" berhasil didownload!`);
+            } catch (error) {
+                console.error('Download error:', error);
+                alert('❌ Gagal mendownload gambar. Silakan coba lagi!');
+            }
         });
         
         // Enter key to generate
@@ -730,4 +747,4 @@
         });
     </script>
 </body>
-      </html>
+</html>
